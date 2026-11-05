@@ -21,5 +21,14 @@ def hello():
 def get_data():
     return jsonify(items)
 
+@app.post("/data")
+def add_data():
+    body = request.get_json(silent=True)
+    if not body or "name" not in body:
+        return jsonify(error="JSON body with 'name' is required"), 400
+    item = {"id": len(items) + 1, "name": body["name"], "price": body.get("price", 0)}
+    items.append(item)
+    return jsonify(item), 201
+
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
